@@ -1,3 +1,8 @@
+# 9/21/2018 - v5.0.1
+
+* Adjust some log levels for security reasons
+* Update FactoryBot references and fix deprecations
+
 # 11/15/2017 - v5.0.0
 
 * Drop Rails 4.2 support
