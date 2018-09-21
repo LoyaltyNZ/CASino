@@ -10,7 +10,7 @@ FactoryBot.define do
     end
 
     trait :regex do
-      regex true
+      regex { true }
     end
   end
 end

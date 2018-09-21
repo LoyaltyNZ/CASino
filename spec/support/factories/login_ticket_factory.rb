@@ -7,10 +7,10 @@ FactoryBot.define do
     end
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
     trait :expired do
-      created_at 601.seconds.ago
+      created_at { 601.seconds.ago }
     end
   end
 end

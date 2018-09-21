@@ -7,10 +7,10 @@ FactoryBot.define do
     secret do
       ROTP::Base32.random_base32
     end
-    active true
+    active { true }
 
     trait :inactive do
-      active false
+      active { false }
     end
   end
 end

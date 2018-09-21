@@ -11,7 +11,7 @@ FactoryBot.define do
     end
 
     trait :consumed do
-      consumed true
+      consumed { true }
     end
   end
 end
