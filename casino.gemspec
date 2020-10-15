@@ -24,12 +24,12 @@ Gem::Specification.new do |s|
   end
 
   s.add_runtime_dependency 'addressable', '>= 2.3'
-  s.add_runtime_dependency 'faraday', '>= 0.8'
+  s.add_runtime_dependency 'faraday', '>= 1.1.0'
   s.add_runtime_dependency 'grape', '>= 0.8'
   s.add_runtime_dependency 'grape-entity', '>= 0.4'
   s.add_runtime_dependency 'kaminari', '~> 0.16'
   s.add_runtime_dependency 'rails', '>= 4.2'
-  s.add_runtime_dependency 'rotp', '>= 2.0'
+  s.add_runtime_dependency 'rotp', '~> 3.3.0'
   s.add_runtime_dependency 'rqrcode_png', '>= 0.1'
   s.add_runtime_dependency 'sass-rails', '>= 4.0.0'
   s.add_runtime_dependency 'terminal-table', '>= 1.4'

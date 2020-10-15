@@ -1,3 +1,8 @@
+# 15/10/2020 - v5.0.2
+
+* Add Ruby 2.7 support
+* Add Rails 6.0 support
+
 # 9/21/2018 - v5.0.1
 
 * Adjust some log levels for security reasons

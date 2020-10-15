@@ -159,7 +159,7 @@ shared_examples_for 'a service ticket validator' do
         it 'contacts the callback server' do
           get validation_action, **request_options
           proxy_granting_ticket = CASino::ProxyGrantingTicket.last
-          WebMock.should have_requested(:get, 'https://www.example.org').with(query: {
+          expect(WebMock).to have_requested(:get, 'https://www.example.org').with(query: {
             pgtId: proxy_granting_ticket.ticket,
             pgtIou: proxy_granting_ticket.iou
           })
