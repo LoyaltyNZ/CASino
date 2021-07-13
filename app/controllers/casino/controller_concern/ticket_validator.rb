@@ -8,6 +8,11 @@ module CASino::ControllerConcern::TicketValidator
     if validation_result.success?
       options = { ticket: ticket }
       options[:proxy_granting_ticket] = acquire_proxy_granting_ticket(params[:pgtUrl], ticket) if params[:pgtUrl].present?
+
+      if ticket.is_a?(CASino::ServiceTicket)
+        CASino::JwtProcessor.refresh_jwt!(ticket.ticket_granting_ticket.user)
+      end
+
       build_ticket_validation_response(true, options)
     else
       build_ticket_validation_response(false,
