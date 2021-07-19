@@ -1,3 +1,8 @@
+# 19/07/2021 - v5.0.3
+
+* Require Addressable version >= 2.8.0 due to vulnerability: CVE-2021-32740
+* Require Kaminari version >= 1.2.1 due to vulnerability: CVE-2020-11082
+
 # 15/10/2020 - v5.0.2
 
 * Add Ruby 2.7 support
