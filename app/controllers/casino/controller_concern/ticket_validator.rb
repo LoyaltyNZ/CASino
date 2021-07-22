@@ -9,7 +9,8 @@ module CASino::ControllerConcern::TicketValidator
       options = { ticket: ticket }
       options[:proxy_granting_ticket] = acquire_proxy_granting_ticket(params[:pgtUrl], ticket) if params[:pgtUrl].present?
 
-      # CASino::UserJwtProcessor is defined in console_sso
+      # CASino::UserJwtProcessor is defined at the service implementing CASino
+      # e.g: console_sso
       if defined?(CASino::UserJwtProcessor) && ticket.is_a?(CASino::ServiceTicket)
         casino_user = ticket.ticket_granting_ticket.user
         CASino::UserJwtProcessor.refresh_jwt!(casino_user)
