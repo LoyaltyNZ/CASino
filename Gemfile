@@ -5,6 +5,7 @@ gem "rails-controller-testing"
 gem "rspec-rails", "~> 4.0.0"
 
 gem 'rqrcode', '~> 0.7.0'
+gem 'bundler-audit'
 
 group :test do
   gem 'byebug'
