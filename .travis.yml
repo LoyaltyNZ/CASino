@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-- 2.7.1
+  - 2.7.1
 bundler_args: --without development
 
 notifications:
@@ -12,3 +12,6 @@ notifications:
     format: html
     on_failure: always
     on_success: change
+
+script:
+  - "bundle exec bundle-audit update && bundle exec bundle-audit check"
