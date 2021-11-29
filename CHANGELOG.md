@@ -1,3 +1,7 @@
+TODO
+
+- Update Postgres to version 13.3 [FT-811](https://loyaltynz.atlassian.net/browse/FT-811)
+
 # 15/10/2020 - v5.0.2
 
 * Add Ruby 2.7 support
