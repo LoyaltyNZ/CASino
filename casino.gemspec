@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'kaminari', '~> 1.2.1'
   s.add_runtime_dependency 'rails', '>= 4.2'
   s.add_runtime_dependency 'rotp', '~> 3.3.0'
-  s.add_runtime_dependency 'rqrcode_png', '>= 0.1'
   s.add_runtime_dependency 'sass-rails', '>= 4.0.0'
   s.add_runtime_dependency 'terminal-table', '>= 1.4'
   s.add_runtime_dependency 'useragent', '>= 0.4'
