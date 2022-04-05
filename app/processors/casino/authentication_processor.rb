@@ -50,6 +50,7 @@ module CASino::AuthenticationProcessor
   end
 
   private
+
   def load_authenticator(name)
     gemname, classname = parse_name(name)
 
