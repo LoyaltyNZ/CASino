@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe CASino::ServiceTicketsController do
   routes { CASino::Engine.routes }
 
@@ -67,6 +69,38 @@ describe CASino::ServiceTicketsController do
       it 'answers with the expected response text' do
         get :validate, **request_options
         response.body.should == response_text_failure
+      end
+    end
+  end
+
+  describe 'GET service_validate' do
+    let(:service_ticket) { FactoryBot.create :service_ticket }
+    let(:service) { service_ticket.service }
+    let(:user) { service_ticket.ticket_granting_ticket.user }
+    let(:parameters) { { service: service, ticket: service_ticket.ticket } }
+    let(:request_options) { { params: parameters } }
+
+    context 'when jwt processor is not defined' do
+      before do
+        CASino.send(:remove_const, "UserJwtProcessor") if defined?(CASino::UserJwtProcessor)
+      end
+
+      it 'does not update the casino user' do
+        expect(user.reload.extra_attributes[:jwt]).to eq(nil)
+        get :service_validate, **request_options
+        expect(user.reload.extra_attributes[:jwt]).to eq(nil)
+      end
+    end
+
+    context 'when jwt processor is defined' do
+      before do
+        require 'dummy/app/processors/dummy_user_jwt_processor'
+      end
+
+      it "updates the casino user" do
+        expect(user.reload.extra_attributes[:jwt]).to eq(nil)
+        get :service_validate, **request_options
+        expect(user.reload.extra_attributes[:jwt]).to eq("refresh!")
       end
     end
   end
