@@ -1,3 +1,7 @@
+# 5/4/2022 - v5.1.0
+
+* [FT-992](https://loyaltynz.atlassian.net/browse/FT-992): use `YAML.safe_load` instead of `YAML.load`, to preserve aliases
+
 # 15/10/2020 - v5.0.2
 
 * Add Ruby 2.7 support
