@@ -6,7 +6,7 @@ class CASino::TicketGrantingTicket < CASino::ApplicationRecord
 
   self.ticket_prefix = 'TGC'.freeze
 
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :service_tickets, dependent: :destroy
 
   scope :active, -> { where(awaiting_two_factor_authentication: false).order('updated_at DESC') }

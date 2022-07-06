@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.summary     = 'A simple CAS server written in Ruby using the Rails framework.'
   s.description = 'CASino is a simple CAS (Central Authentication Service) server.'
+  s.required_ruby_version = '>= 3.1.0'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -28,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'grape', '>= 0.8'
   s.add_runtime_dependency 'grape-entity', '>= 0.4'
   s.add_runtime_dependency 'kaminari', '~> 1.2.1'
-  s.add_runtime_dependency 'rails', '>= 4.2'
+  s.add_runtime_dependency 'rails', '>= 7.0.3'
   s.add_runtime_dependency 'rotp', '~> 3.3.0'
   s.add_runtime_dependency 'rqrcode_png', '>= 0.1'
   s.add_runtime_dependency 'sass-rails', '>= 4.0.0'

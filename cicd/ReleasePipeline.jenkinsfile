@@ -1,0 +1,74 @@
+def appName = 'casino'
+def repositoryName = 'CASino'
+
+// TODO: Change target channel for branch deployment notifications
+//       Make sure target channel has Jenkins app added to it
+def slackChannel = '#cicd-production-deployments'
+def buildLink = "<${env.RUN_DISPLAY_URL}|${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}>"
+def slackResponse = slackSend(channel: slackChannel, message: "*${repositoryName} | ${buildLink}*\nPreparing full release...", color: "#0099ff")
+
+pipeline {
+  agent { label 'release-helper' }
+
+  environment {
+    GITHUB_API_TOKEN = credentials('github-svc-cicd')
+    JIRA_API_TOKEN = credentials('jira-svc-cicd')
+    DATADOG_API_TOKEN = credentials('datadog-api-token')
+    DATADOG_APPLICATION_KEY = credentials('datadog-application-token')
+    CHANGELOG_VERSION = sh(script: "grep -oE -m 1 '([0-9]+)\\.([0-9]+)\\.([0-9]+)' CHANGELOG.md", returnStdout: true).trim()
+    RELEASE_VERSION = "${CHANGELOG_VERSION}-${BUILD_NUMBER}"
+    COMMIT_AUTHOR = sh(script: "git log --format='%an' ${env.GIT_COMMIT}^!", returnStdout: true).trim()
+    COMMIT_AUTHOR_EMAIL = sh(script: "git log --format='%ae' ${env.GIT_COMMIT}^!", returnStdout: true).trim()
+    COMMIT_LINK = "<${env.GIT_URL.replace('.git', '')}/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.substring(0, 7)}>"
+    BUILD_TITLE = "*<${env.GIT_URL}|${repositoryName}> :git: | ${buildLink}*"
+  }
+
+  // Configuration that applies to the whole job
+  options {
+    ansiColor('xterm') // Beautiful console colors
+    timeout(time: 3, unit: 'HOURS') // Set a build timeout
+  }
+
+  stages {
+    stage('TagRelease')  {
+      steps {
+        container('release-helper') {
+          wrap([$class: 'BuildUser']) {
+            script {
+              env.DEPLOYER = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR : BUILD_USER
+              env.DEPLOYER_EMAIL = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR_EMAIL : BUILD_USER_EMAIL
+              env.SLACK_USER = DEPLOYER_EMAIL.contains('@loyalty.co.nz') ? "<@${slackUserIdFromEmail(DEPLOYER_EMAIL)}>" : env.DEPLOYER
+              env.BUILD_DETAILS = "```"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nDeployer: ${env.DEPLOYER}"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nRelease:  ${env.RELEASE_VERSION}"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nCommit:   ${env.COMMIT_LINK} (${env.COMMIT_AUTHOR})"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\n```"
+            }
+          }
+          slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nNew gem release ${repositoryName} version ${RELEASE_VERSION}...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+          sh """
+            /dist/release_helper --type library_release \
+              --environmentName production \
+              --appName ${appName} \
+              --repositoryName ${repositoryName} \
+              --releaseNumber ${RELEASE_VERSION} \
+              --gitCommit ${GIT_COMMIT} \
+              --jenkinsBuildUrl ${BUILD_URL}
+          """
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nFull release successful!\n${env.BUILD_DETAILS}", color: "good", timestamp: slackResponse.ts)
+    }
+    failure {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nFull release failed!\n${env.BUILD_DETAILS}", color: "danger", timestamp: slackResponse.ts)
+    }
+    aborted {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nFull release aborted!\n${env.BUILD_DETAILS}", color: "#999999", timestamp: slackResponse.ts)
+    }
+  }
+}

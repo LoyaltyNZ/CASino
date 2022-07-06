@@ -6,7 +6,7 @@ class CASino::ProxyTicket < CASino::ApplicationRecord
   self.ticket_prefix = 'PT'.freeze
 
   validates :ticket, uniqueness: true
-  belongs_to :proxy_granting_ticket
+  belongs_to :proxy_granting_ticket, optional: true
   has_many :proxy_granting_tickets, as: :granter, dependent: :destroy
 
   def self.cleanup_unconsumed

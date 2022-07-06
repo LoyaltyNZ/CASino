@@ -1,6 +1,6 @@
 
 class CASino::TwoFactorAuthenticator < CASino::ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
 
   scope :active, -> { where(active: true) }
 

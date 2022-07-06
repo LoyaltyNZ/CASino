@@ -94,7 +94,7 @@ describe CASino::ServiceTicketsController do
 
     context 'when jwt processor is defined' do
       before do
-        require 'dummy/app/processors/dummy_user_jwt_processor'
+        require 'dummy/lib/casino/user_jwt_processor'
       end
 
       it "updates the casino user" do
