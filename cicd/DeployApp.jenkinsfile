@@ -1,0 +1,135 @@
+def appName = 'casino'
+def repositoryName = "casino"
+def airbrakeProjectId = "<AIRBRAKE_PROJECT_ID>"    // TODO Update from Airbrake
+def airbrakeProjectKey = "<AIRBRAKE_PROJECT_KEY>"  // TODO Update from Airbrake
+
+pipeline {
+  agent none
+
+  parameters {
+    choice(name: 'ENVIRONMENT', choices: ['edge', 'blue', 'red', 'production'], description: 'Environment to Deploy')
+    string(name: 'VERSION', defaultValue: '', description: 'Docker Image Tag Version')
+  }
+
+  options {
+    withAWS(credentials:'jenkins-svc-cicd', roleAccount:'229366033492', role:'cicd')
+    ansiColor('xterm')
+    timeout(time: 3, unit: 'HOURS')
+  }
+
+  environment {
+    GITHUB_API_TOKEN = credentials('github-svc-cicd')
+    JIRA_API_TOKEN = credentials('jira-svc-cicd')
+    DATADOG_API_TOKEN = credentials('datadog-api-token')
+    DATADOG_APPLICATION_KEY = credentials('datadog-application-token')
+
+    // TODO: Use this block if you are developing a console app that has Cypress tests
+    // // TODO Update with the path to the *smoke* tests within the
+    // //      https://github.com/LoyaltyNZ/Foundation_Tech_Console_App_Tests repo
+    // //      that are specifically for this service.
+    // //
+    // //      Smoketests are run against all environments including production,
+    // //      so be careful to only include 'READ' only tests.
+    // //
+    // //      By convention we place smoketests in a file called 'smoketest.js'
+    // SMOKETEST_SPECS = "<API_GROUP>-API/smoketest.js"
+
+    // TODO: Use this block if you are developing a service that has Mocha tests
+    // // TODO Update with the path to the *smoke* tests for this service within the
+    // // https://github.com/LoyaltyNZ/test_integration_loyalty_cloud_api/tree/main/tests/loyalty-cloud repo
+    // TEST_SERVICE = "<SERVICE>"
+    // // Smoketests are run against all environments including production,
+    // // so be careful to only include 'READ' only tests.
+    // TEST_TYPE = "smoke"
+
+  }
+
+  stages {
+    stage('K8sAgent') {
+      agent {label 'k8s' }
+      stages {
+        // TODO: Remove this stage if DB migration is not needed
+        stage('DBMigration') {
+          steps {
+            container('k8s') {
+              script {
+                // Show params in UI
+                manager.addShortText("${params.ENVIRONMENT}", "black", "Orange", "0px", "white")
+                manager.addShortText("${params.VERSION}", "black", "PowderBlue", "0px", "white")
+              }
+              // TODO: Replace <DB_MIGRATION_COMMAND> with the actual DB migration command e.g.: bundle exec rake db:migrate
+              sh "./cicd/DbMigration.sh ${appName} ${params.VERSION} ${params.ENVIRONMENT} '<DB_MIGRATION_COMMAND>'"
+            }
+          }
+        }
+
+        stage ('DeployApp') {
+          steps {
+            container('k8s') {
+              sh """
+                helm repo update
+                CHART=\$(helm list -f '^${appName}\$' --kube-context ${params.ENVIRONMENT} -o json | jq -r '.[].chart')
+                if [ -n "\$CHART" ]; then echo \$CHART | grep app-generic || helm delete ${appName} --kube-context ${params.ENVIRONMENT}; fi
+                helm upgrade ${appName} \
+                  nexus/app-generic \
+                  --kube-context ${params.ENVIRONMENT} \
+                  --install \
+                  --values chart/common-values.yaml \
+                  --values chart/${params.ENVIRONMENT}-values.yaml \
+                  --set image.tag=${params.VERSION} \
+                  --set env.ENV=${params.ENVIRONMENT}
+                kubectl rollout restart deployment/${appName} --context ${params.ENVIRONMENT}
+              """
+            }
+          }
+        }
+      }
+    }
+
+    stage ('NotifyDeploy') {
+      agent { label 'release-helper' }
+      steps {
+        container('release-helper') {
+          sh """
+          /dist/release_helper --type branch_release \
+                                --environmentName ${params.ENVIRONMENT} \
+                                --appName ${appName} \
+                                --repositoryName ${repositoryName} \
+                                --releaseNumber ${params.VERSION} \
+                                --gitCommitSha ${GIT_COMMIT} \
+                                --jenkinsBuildUrl ${BUILD_URL} \
+                                --airbrakeProjectId ${airbrakeProjectId} \
+                                --airbrakeProjectKey ${airbrakeProjectKey}
+          """
+        }
+      }
+    }
+
+    stage ('SmokeTest') {
+      steps {
+        // TODO: Use this block if you are developing a console app that has Cypress tests
+        // build (
+        //   job: 'Tests/Foundation_Tech_Console_App_Tests/RunTests',
+        //   parameters: [
+        //     [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${params.ENVIRONMENT}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_SPECS', value: "${env.SMOKETEST_SPECS}"]
+        //   ],
+        //   wait: true
+        // )
+
+        // TODO: Use this block if you are developing a service that has Mocha tests
+        // build (
+        //   job: 'Tests/Integration_Loyalty_Cloud_API/RunTests',
+        //   parameters: [
+        //     [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${params.ENVIRONMENT}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_TYPE', value: "${env.TEST_TYPE}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_SERVICE', value: "${env.TEST_SERVICE}"]
+        //   ],
+        //   wait: true
+        // )
+
+      }
+    }
+
+  }
+}

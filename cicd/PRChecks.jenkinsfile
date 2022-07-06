@@ -1,0 +1,132 @@
+def appName = 'casino'
+
+pipeline {
+  agent {
+    kubernetes {
+      yaml """\
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        labels:
+          some-label: dind-agent
+      spec:
+        containers:
+        # TODO uncomment for elixir projects
+        # - name: elixir
+        #   image: docker.loyaltydevops.co.nz/elixir:1.10.4
+        #   tty: true
+        # TODO uncomment for rails projects
+        # - name: ruby
+        #   image: docker.loyaltydevops.co.nz/service_base_ruby:2.7.3
+        #   tty: true
+        # TODO uncomment for node projects
+        # - name: node
+        #   image: docker.loyaltydevops.co.nz/node:8.11.4-alpine
+        #   imagePullPolicy: IfNotPresent
+        #   tty: true
+        # TODO uncomment for postgres addon
+        # - name: postgres
+        #   image: docker.loyaltydevops.co.nz/postgres:9.6
+        #   imagePullPolicy: IfNotPresent
+        #   tty: true
+        #   env:
+        #     - name: POSTGRES_PASSWORD
+        #       value: postgres
+        - name: dind
+          image: docker.loyaltydevops.co.nz/docker:dind
+          imagePullPolicy: Always
+          tty: true
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: docker-graph-storage
+              mountPath: /var/lib/docker
+        volumes:
+          - name: docker-graph-storage
+            emptyDir: {}
+      """
+    }
+  }
+
+  options {
+    ansiColor('xterm')
+    timeout(time: 3, unit: 'HOURS')
+  }
+
+  stages {
+    stage ('UnitTest and DockerBuild') {
+      parallel {
+        stage ('UnitTest') {
+          // TODO uncomment for elixir projects
+          // steps {
+          //   container('elixir') {
+          //    sh '''
+          //      mix do local.hex --force, local.rebar --force
+          //      MIX_ENV=test mix deps.get
+          //      MIX_ENV=test mix test --trace
+          //      mix deps.audit
+          //    '''
+          //   }
+          // }
+          // TODO uncomment for rails projects
+          // steps {
+          //   container('ruby') {
+          //     sh '''
+          //       # Install wait-for-it
+          //       apt-get update && apt-get install -y wait-for-it
+          //
+          //       # Check postgres is reachable then create test database
+          //       wait-for-it 127.0.0.1:5432 -t 0
+          //       psql 'postgres://postgres:postgres@127.0.0.1:5432/postgres' -c "create database service_tag_test;"
+          //
+          //       # Install ruby gems
+          //       bundle install
+          //
+          //       # DB migrations
+          //       RACK_ENV=test bundle exec rake db:migrate --trace
+          //
+          //       # Fail if gems have security vulnerabilities
+          //       bundle exec bundle-audit update && bundle exec bundle-audit check
+          //
+          //       # Unit tests
+          //       TZ=Pacific/Auckland bundle exec rspec spec --backtrace
+          //     '''
+          //   }
+          // }
+          // TODO uncomment for node projects
+          // steps {
+          //   container('node') {
+          //     sh '''
+          //       apk update
+          //       apk add python make g++   # for node.gyp
+          //       apk add postgresql-client # 9.6
+          //
+          //       # Needed by wait-for-it
+          //       apk add bash git
+          //       git clone https://github.com/LoyaltyNZ/wait-for-it.git
+          //
+          //       # Check postgres is reachable then create test database
+          //       wait-for-it/wait-for-it.sh 127.0.0.1:5432 -t 0
+          //       psql 'postgres://postgres:postgres@127.0.0.1:5432/postgres' -c 'create database mock_service_fly_buys_member;'
+          //
+          //       # Install node modules
+          //       npm install
+          //
+          //       # Unit tests
+          //       TZ=Pacific/Auckland RACK_ENV=edge npm run test
+          //     '''
+          //   }
+          // }
+        }
+        stage ('DockerBuild') {
+          steps {
+            container('dind') {
+              sh "docker build -t ${appName} ."
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
