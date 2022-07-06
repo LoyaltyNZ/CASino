@@ -5,7 +5,6 @@
 .yardoc
 .rails_generators~
 gemfiles/vendor
-Gemfile.lock
 InstalledFiles
 _yardoc
 coverage
@@ -17,7 +16,6 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-*.lock
 .idea/
 *.sqlite*
 *.log
