@@ -19,7 +19,6 @@ test/version_tmp
 tmp
 *.lock
 .idea/
-.ruby-version
 *.sqlite*
 *.log
 .byebug_history
