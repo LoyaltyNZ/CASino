@@ -1,5 +1,5 @@
 def appName = 'casino'
-def repositoryName = 'casino'
+def repositoryName = 'CASino'
 
 // TODO: Change target channel for branch deployment notifications
 //       Make sure target channel has Jenkins app added to it
