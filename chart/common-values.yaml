@@ -1,0 +1,48 @@
+fullnameOverride: casino
+
+image:
+  repository: docker.loyaltydevops.co.nz/casino
+  ports:
+    # TODO Set the port exposed by the Docker image used above (Can't be `80` if nginx sidecar is enabled).
+    - containerPort: 8080
+      # TODO Set servicePort if Service port should be different from containerPort
+      # servicePort: 80
+      protocol: TCP
+    # TODO Elixir example
+    # - containerPort: 4000
+    #   servicePort: 80
+    #   protocol: TCP
+    # TODO Elixir with Nginx sidecar example
+    # - containerPort: 80
+    #   protocol: TCP
+    # TODO Elixir without custom Service port example
+    # - containerPort: 4000
+    #   protocol: TCP
+
+
+ingress:
+  # TODO Enable ingress if requests need to be routed to the app directly via ALB, for example elixir apps
+  enabled: false
+  # TODO Use `internal` if app should only be accessible from whitelisted IPs
+  #      Use `external` if app should be publicly accessible
+  type: external
+  # TODO Set Ingress evaluation priority (1-1000). Smaller number get evaluated first.
+  #      This priority will be evaluated against Ingress rules within the same Ingress group (alb.ingress.kubernetes.io/group.name)
+  #      including Ingress rules set in the 'kubernetes_deployments' repo.
+  # priority: 1
+  # TODO Add the following if have nginx sidecar
+  # targetService: casino-nginx
+  # targetServicePort: 80
+
+configMapRefs:
+  - casino-configuration
+
+secretRefs:
+  - casino-secrets
+
+# TODO Add the following if have nginx sidecar
+# nginx:
+#   enabled: true
+#   image: openresty/openresty:alpine
+#   configMountPath: /usr/local/openresty/nginx/conf/nginx.conf
+#   configMapRef: casino-nginx-conf

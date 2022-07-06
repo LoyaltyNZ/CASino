@@ -1,0 +1,10 @@
+ingress:
+  env: edge
+  hosts:
+  - host: api.edge.loyaltytest.co.nz
+    paths: # TODO update API_PATH
+    - path: /1/<API_PATH>*
+  - host: api.loyaltyedge.co.nz
+    paths: # TODO update API_PATH
+    - path: /1/<API_PATH>*
+

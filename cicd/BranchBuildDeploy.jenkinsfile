@@ -1,0 +1,199 @@
+def appName = 'casino'
+def defaultBranch = 'main' // TODO GitHub default branch 'main', or 'master'
+def repositoryName = 'casino'
+def airbrakeProjectId = '<AIRBRAKE_PROJECT_ID>'     // TODO Update from Airbrake
+def airbrakeProjectKey = '<AIRBRAKE_PROJECT_KEY>'   // TODO Update from Airbrake
+
+// TODO: Change target channel for branch deployment notifications
+//       Make sure target channel has Jenkins app added to it
+def slackChannel = '#cicd-branch-deployments'
+def buildLink = "<${env.RUN_DISPLAY_URL}|${env.JOB_NAME} ${env.BUILD_DISPLAY_NAME}>"
+def slackResponse = slackSend(channel: slackChannel, message: "*${repositoryName} | ${buildLink}*\nPreparing branch deployment...", color: "#0099ff")
+
+pipeline {
+  agent { label 'dind' }
+
+  parameters {
+    gitParameter(branchFilter: 'origin/(.*)', defaultValue: "${defaultBranch}", name: 'BRANCH', type: 'PT_BRANCH')
+    choice(name: 'ENVIRONMENT', choices: ['edge', 'blue', 'red'], description: 'Test environment to deploy to')
+  }
+
+  options {
+    withAWS(credentials:'jenkins-svc-cicd', roleAccount:'229366033492', role:'cicd')
+    ansiColor('xterm')
+    timeout(time: 3, unit: 'HOURS')
+  }
+
+  environment {
+    TAG = params.BRANCH.replace("/", "_")
+    GITHUB_API_TOKEN = credentials('github-svc-cicd')
+    JIRA_API_TOKEN = credentials('jira-svc-cicd')
+    DATADOG_API_TOKEN = credentials('datadog-api-token')
+    DATADOG_APPLICATION_KEY = credentials('datadog-application-token')
+    COMMIT_AUTHOR = sh(script: "git log --format='%an' ${env.GIT_COMMIT}^!", returnStdout: true).trim()
+    COMMIT_LINK = "<${env.GIT_URL.replace('.git', '')}/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.substring(0, 7)}>"
+    BUILD_TITLE = "*<${env.GIT_URL}|${repositoryName}> :git: | ${buildLink}*"
+    // TODO Use this block if you are developing a console app that has Cypress tests
+    //
+    // // TODO Update with the path to the integration tests within the
+    // //      https://github.com/LoyaltyNZ/Foundation_Tech_Console_App_Tests repo
+    // //      that are specifically for this service
+    // //      Integration tests are run against 'edge' and 'blue' only
+    // INTEGRATION_SPECS = "<API_GROUP>-API/*.js"
+    // // TODO Smoketests are run against all environments including production,
+    // //      so be careful to only include 'READ' only tests.
+    // //
+    // //      By convention we place smoketests in a file called 'smoketest.js'
+    // SMOKETEST_SPECS = "<API_GROUP>-API/smoketest.js"
+    //
+    // TEST_SPECS = "${(params.ENVIRONMENT != 'red') ? env.INTEGRATION_SPECS : env.SMOKETEST_SPECS}"
+
+    // -- Use this block if you are developing a service that has Mocha tests
+    //
+    // // TODO Update with the path to the integration tests for this service within the
+    // // https://github.com/LoyaltyNZ/test_integration_loyalty_cloud_api/tree/main/tests/loyalty-cloud repo
+    // TEST_SERVICE = "<SERVICE>"
+    // // Integration tests are run against 'edge' and 'blue' only
+    // TEST_TYPE = "${(params.ENVIRONMENT != 'red') ? 'integration' : 'smoke'}"
+
+  }
+
+  stages {
+    stage ('DockerBuildPush') {
+      steps {
+        container('dind') {
+          withCredentials([usernamePassword(credentialsId: 'nexus-svc-docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            wrap([$class: 'BuildUser']) {
+              script {
+                env.BUILD_DETAILS = "```"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nDeployer: ${BUILD_USER} (${BUILD_USER_ID})"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nEnv:      ${params.ENVIRONMENT}"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nBranch:   ${params.BRANCH}"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nCommit:   ${env.COMMIT_LINK} (${env.COMMIT_AUTHOR})"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nImage:    docker.loyaltydevops.co.nz/${appName}:${env.TAG}"
+                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\n```"
+              }
+            }
+            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRunning branch deployment...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+            script {
+              // Show params in UI
+              manager.addShortText("${params.ENVIRONMENT}", "black", "Orange", "0px", "white")
+              manager.addShortText("${params.BRANCH}", "black", "PowderBlue", "0px", "white")
+              manager.addShortText("${env.TAG}", "black", "PowderBlue", "0px", "white")
+
+              // Check if tag is still invalid
+              // A tag name must be valid ASCII and may contain lowercase and uppercase letters, digits, underscores, periods and dashes.
+              // A tag name may not start with a period or a dash and may contain a maximum of 128 characters.
+              if (!(env.TAG =~ /^[a-zA-Z\d_][a-zA-Z\d\.\-_]{0,127}$/)) {
+                error('Invalid Docker tag!')
+              }
+            }
+
+            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nBuilding Docker image...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+            sh "docker build -t dockerpush.loyaltydevops.co.nz/${appName}:${env.TAG} ."
+
+            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nPushing Docker image to Nexus...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+            sh 'docker login -u $USERNAME -p $PASSWORD dockerpush.loyaltydevops.co.nz'
+            sh "docker push dockerpush.loyaltydevops.co.nz/${appName}:${env.TAG}"
+          }
+        }
+      }
+    }
+
+    stage('K8sAgent') {
+      agent { label 'k8s' }
+      stages {
+        // TODO: Remove this stage if DB migration is not needed
+        stage('DBMigration') {
+          steps {
+            container('k8s') {
+              slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRunning DB migration...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+              // TODO: Replace <DB_MIGRATION_COMMAND> with the actual DB migration command e.g.: bundle exec rake db:migrate
+              sh "./cicd/DbMigration.sh ${appName} ${env.TAG} ${params.ENVIRONMENT} '<DB_MIGRATION_COMMAND>'"
+            }
+          }
+        }
+
+        stage ('DeployApp') {
+          steps {
+            container('k8s') {
+              slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nDeploying app to Kubernetes...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+              sh """
+                helm repo update
+                CHART=\$(helm list -f '^${appName}\$' --kube-context ${params.ENVIRONMENT} -o json | jq -r '.[].chart')
+                if [ -n "\$CHART" ]; then echo \$CHART | grep app-generic || helm delete ${appName} --kube-context ${params.ENVIRONMENT}; fi
+                helm upgrade ${appName} nexus/app-generic \
+                  --kube-context ${params.ENVIRONMENT} \
+                  --install \
+                  --values chart/common-values.yaml \
+                  --values chart/${params.ENVIRONMENT}-values.yaml \
+                  --set image.tag=${env.TAG} \
+                  --set env.ENV=${params.ENVIRONMENT}
+                kubectl rollout restart deployment/${appName} --context ${params.ENVIRONMENT}
+              """
+            }
+          }
+        }
+      }
+    }
+
+    stage ('NotifyDeploy') {
+      agent { label 'release-helper' }
+      steps {
+        container('release-helper') {
+          slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRecording ${params.ENVIRONMENT} branch deployment event...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+          sh """
+            /dist/release_helper --type branch_release \
+              --environmentName ${params.ENVIRONMENT} \
+              --appName ${appName} \
+              --repositoryName ${repositoryName} \
+              --releaseNumber ${env.TAG} \
+              --gitCommitSha ${GIT_COMMIT} \
+              --jenkinsBuildUrl ${BUILD_URL} \
+              --airbrakeProjectId ${airbrakeProjectId} \
+              --airbrakeProjectKey ${airbrakeProjectKey}
+          """
+        }
+      }
+    }
+
+    stage ('IntegrationTest') {
+      steps {
+        slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRunning integration tests...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+        // TODO: Use this block if you are developing a console app that has Cypress tests
+        // build (
+        //   job: 'Tests/Foundation_Tech_Console_App_Tests/RunTests',
+        //   parameters: [
+        //     [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${params.ENVIRONMENT}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_SPECS', value: "${env.TEST_SPECS}"]
+        //   ],
+        //   wait: true
+        // )
+
+
+        // TODO: Use this block if you are developing a service that has Mocha tests
+        // build (
+        //   job: 'Tests/Integration_Loyalty_Cloud_API/RunTests',
+        //   parameters: [
+        //     [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${params.ENVIRONMENT}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_TYPE', value: "${env.TEST_TYPE}"],
+        //     [$class: 'StringParameterValue', name: 'TEST_SERVICE', value: "${env.TEST_SERVICE}"]
+        //   ],
+        //   wait: true
+        // )
+      }
+    }
+  }
+
+  post {
+    success {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nBranch deployment successful!\n${env.BUILD_DETAILS}", color: "good", timestamp: slackResponse.ts)
+    }
+    failure {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nBranch deployment failed!\n${env.BUILD_DETAILS}", color: "danger", timestamp: slackResponse.ts)
+    }
+    aborted {
+      slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nBranch deployment aborted!\n${env.BUILD_DETAILS}", color: "#999999", timestamp: slackResponse.ts)
+    }
+  }
+}
