@@ -1,3 +1,14 @@
+# 5/7/2022 - v5.2.0
+
+* Upgrade to Rails 7, Ruby 3 [DS-1946](https://loyaltynz.atlassian.net/browse/DS-1946)
+  - Rails 5.0.7 -> 5.1.6 upgrade made all `belongs_to` associations optional [reference](https://github.com/rails/rails/issues/34454)
+  - Rails 7 upgrade
+    - Many configuration changes as a result of running the Rails upgrade tool.
+    - Major change to the class loader, which required some configuration (see `zeitwork.rb` files), and also moving the 'dummy' `CASino::UserJwtProcessor` implementation to a new position in the file structure.
+    - Activerecord change from `update_attributes!` -> `.update!`
+  - Removed 'coveralls' gem as we can no longer use it for closed source projects.
+
+
 # 5/4/2022 - v5.1.0
 
 * [FT-992](https://loyaltynz.atlassian.net/browse/FT-992): use `YAML.safe_load` instead of `YAML.load`, to preserve aliases

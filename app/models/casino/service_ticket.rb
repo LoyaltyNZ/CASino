@@ -5,7 +5,7 @@ class CASino::ServiceTicket < CASino::ApplicationRecord
 
   self.ticket_prefix = 'ST'.freeze
 
-  belongs_to :ticket_granting_ticket
+  belongs_to :ticket_granting_ticket, optional: true
   before_destroy :send_single_sign_out_notification, if: :consumed?
   has_many :proxy_granting_tickets, as: :granter, dependent: :destroy
 

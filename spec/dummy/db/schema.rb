@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160502074450) do
+ActiveRecord::Schema[6.1].define(version: 20160502074450) do
 
   create_table "casino_auth_token_tickets", force: true do |t|
     t.string   "ticket",     null: false

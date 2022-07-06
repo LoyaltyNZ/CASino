@@ -392,7 +392,7 @@ describe CASino::SessionsController do
             let(:cookie_jar) { HashWithIndifferentAccess.new }
 
             before(:each) do
-              ticket_granting_ticket.update_attributes! long_term: true
+              ticket_granting_ticket.update! long_term: true
               controller.stub(:cookies).and_return(cookie_jar)
             end
 
