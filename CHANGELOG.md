@@ -7,6 +7,7 @@
     - Major change to the class loader, which required some configuration (see `zeitwork.rb` files), and also moving the 'dummy' `CASino::UserJwtProcessor` implementation to a new position in the file structure.
     - Activerecord change from `update_attributes!` -> `.update!`
   - Removed 'coveralls' gem as we can no longer use it for closed source projects.
+  - Integrated with Jenkins CI/CD, replacing Travis
 
 
 # 5/4/2022 - v5.1.0
