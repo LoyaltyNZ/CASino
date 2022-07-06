@@ -8,8 +8,12 @@ Bundler.require(*Rails.groups)
 
 module Dummy
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.0
+
+    # User Rails 7 defaults
+    config.load_defaults 7.0
+
+    # Tests fail if this is set to the default 'true' value
+    config.action_controller.raise_on_open_redirects = false
 
     # Configuration for the application, engines, and railties goes here.
     #
