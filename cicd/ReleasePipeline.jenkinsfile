@@ -21,21 +21,6 @@ pipeline {
     COMMIT_AUTHOR_EMAIL = sh(script: "git log --format='%ae' ${env.GIT_COMMIT}^!", returnStdout: true).trim()
     COMMIT_LINK = "<${env.GIT_URL.replace('.git', '')}/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.substring(0, 7)}>"
     BUILD_TITLE = "*<${env.GIT_URL}|${repositoryName}> :git: | ${buildLink}*"
-
-    // TODO: Use this block if you are developing a console app that has Cypress tests
-    // // TODO Update with the path to the integration tests within the
-    // //      https://github.com/LoyaltyNZ/Foundation_Tech_Console_App_Tests repo
-    // //      that are specifically for this service
-    // //      Integration tests are run against 'edge' and 'blue' only
-    // INTEGRATION_SPECS = "<API_GROUP>-API/*.js"
-
-
-    // TODO: Use this block if you are developing a service that has Mocha tests        // // TODO Update with the path to the integration tests for this service within the
-    // // https://github.com/LoyaltyNZ/test_integration_loyalty_cloud_api/tree/main/tests/loyalty-cloud repo
-    // TEST_SERVICE = "<SERVICE>"
-    // // Integration tests are run against 'edge' and 'blue' only
-    // TEST_TYPE = "integration"
-
   }
 
   // Configuration that applies to the whole job
@@ -45,153 +30,25 @@ pipeline {
   }
 
   stages {
-    stage ('DockerBuildPush') {
-      steps {
-        container('dind') {
-          withCredentials([usernamePassword(credentialsId: 'nexus-svc-docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            wrap([$class: 'BuildUser']) {
-              script {
-                env.DEPLOYER = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR : BUILD_USER
-                env.DEPLOYER_EMAIL = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR_EMAIL : BUILD_USER_EMAIL
-                env.SLACK_USER = DEPLOYER_EMAIL.contains('@loyalty.co.nz') ? "<@${slackUserIdFromEmail(DEPLOYER_EMAIL)}>" : env.DEPLOYER
-                env.BUILD_DETAILS = "```"
-                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nDeployer: ${env.DEPLOYER}"
-                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nRelease:  ${env.RELEASE_VERSION}"
-                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nCommit:   ${env.COMMIT_LINK} (${env.COMMIT_AUTHOR})"
-                env.BUILD_DETAILS = "${env.BUILD_DETAILS}\n```"
-              }
-            }
-            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRunning full release...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-            script {
-              manager.addShortText("${RELEASE_VERSION}", "black", "PowderBlue", "0px", "white")
-            }
-            // Build and Tag image
-            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nBuilding Docker image...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-            sh "docker build -t dockerpush.loyaltydevops.co.nz/${appName}:${RELEASE_VERSION} -t dockerpush.loyaltydevops.co.nz/${appName}:latest ."
-            // Push Docker image to Nexus
-            slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nPushing Docker image to Nexus...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-            sh 'docker login -u $USERNAME -p $PASSWORD dockerpush.loyaltydevops.co.nz'
-            sh "docker push -a dockerpush.loyaltydevops.co.nz/${appName}"
-          }
-        }
-      }
-      post {
-        success {
-          slackSend(channel: slackResponse.threadId, color: "good", message: "Docker images built and pushed to Nexus:\n```\ndocker.loyaltydevops.co.nz/${appName}:${env.RELEASE_VERSION}\ndocker.loyaltydevops.co.nz/${appName}:latest\n```")
-        }
-        failure {
-          slackSend(channel: slackResponse.threadId, color: "danger", message: "Docker image build and push stage failed!")
-        }
-        aborted {
-          slackSend(channel: slackResponse.threadId, color: "#999999", message: "Docker image build and push stage aborted!")
-        }
-      }
-    }
-
-    stage('DeployTestNotif') {
-      steps {
-        slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRunning deployment and integration tests for test environments...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-      }
-    }
-
-    stage('DeployAndTest') {
-      failFast false
-      matrix {
-        axes {
-          axis {
-            name 'ENVIRONMENT'
-            values 'edge', 'blue', 'red'
-          }
-        }
-        stages {
-          stage ('Deploy') {
-            steps {
-              script {
-                deployJob = build(
-                  job: 'DeployApp',
-                  parameters: [
-                    [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${ENVIRONMENT}"],
-                    [$class: 'StringParameterValue', name: 'VERSION', value: "${RELEASE_VERSION}"]
-                  ],
-                  wait: true
-                )
-                deployJobLink = "<https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/${repositoryName}/job/DeployApp/${deployJob.id}/display/redirect|Kubernetes/${repositoryName}/DeployApp #${deployJob.id}>"
-                deployJobColor = deployJob.currentResult == 'SUCCESS' ? 'good' : 'danger'
-              }
-              slackSend(channel: slackResponse.threadId, color: deployJobColor, message: "App deployment to `${ENVIRONMENT}` Kubernetes: ${deployJob.currentResult}\n${deployJobLink}")
-            }
-          }
-          stage ('IntegrationTest') {
-            when {
-              // We don't have integration tests for 'red'
-              expression { return !(ENVIRONMENT == "red") }
-            }
-            steps {
-              // TODO: Use this block if you are developing a console app that has Cypress tests
-              // script {
-              //   integrationTestJob = build(
-              //     job: 'Tests/Foundation_Tech_Console_App_Tests/RunTests',
-              //     parameters: [
-              //       [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${ENVIRONMENT}"],
-              //       [$class: 'StringParameterValue', name: 'TEST_SPECS', value: "${env.INTEGRATION_SPECS}"]
-              //     ],
-              //     wait: true
-              //   )
-              //   integrationTestJobLink = "<https://jenkins.loyaltydevops.co.nz/job/Tests/job/Foundation_Tech_Console_App_Tests/job/RunTests/${integrationTestJob.id}/display/redirect|Tests/Foundation_Tech_Console_App_Tests/RunTests #${integrationTestJob.id}>"
-              //   integrationTestJobColor = integrationTestJob.currentResult == 'SUCCESS' ? 'good' : 'danger'
-              // }
-
-              // TODO: Use this block if you are developing a service that has Mocha tests
-              // script {
-              //   integrationTestJob = build(
-              //     job: 'Tests/Integration_Loyalty_Cloud_API/RunTests',
-              //     parameters: [
-              //       [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: "${ENVIRONMENT}"],
-              //       [$class: 'StringParameterValue', name: 'TEST_TYPE', value: "${env.TEST_TYPE}"],
-              //       [$class: 'StringParameterValue', name: 'TEST_SERVICE', value: "${env.TEST_SERVICE}"]
-              //     ],
-              //     wait: true
-              //   )
-              //   integrationTestJobLink = "<https://jenkins.loyaltydevops.co.nz/job/Tests/job/Integration_Loyalty_Cloud_API/job/RunTests/${integrationTestJob.id}/display/redirect|Tests/Integration_Loyalty_Cloud_API/RunTests #${integrationTestJob.id}>"
-              //   integrationTestJobColor = integrationTestJob.currentResult == 'SUCCESS' ? 'good' : 'danger'
-              // }
-
-              slackSend(channel: slackResponse.threadId, color: integrationTestJobColor, message: "`${ENVIRONMENT}` integration test: ${integrationTestJob.currentResult}\n${integrationTestJobLink}")
-            }
-          }
-        }
-      }
-    }
-
-    stage ('DeployProduction') {
-      steps {
-        slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\n${env.SLACK_USER} - production deployment needs approval!\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-        script {
-          prodGateApprover = input(message: "Deploy to production?", submitterParameter: 'APPROVER')
-        }
-        slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nDeploying app to `production` Kubernetes... (Approved by ${prodGateApprover})\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
-        script {
-          deployJob = build(
-            job: 'DeployApp',
-            parameters: [
-              [$class: 'StringParameterValue', name: 'ENVIRONMENT', value: 'production'],
-              [$class: 'StringParameterValue', name: 'VERSION', value: "${RELEASE_VERSION}"]],
-            wait: true
-          )
-          deployJobLink = "<https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/${repositoryName}/job/DeployApp/${deployJob.id}/display/redirect|Kubernetes/${repositoryName}/DeployApp #${deployJob.id}>"
-          deployJobColor = deployJob.currentResult == 'SUCCESS' ? 'good' : 'danger'
-        }
-        slackSend(channel: slackResponse.threadId, color: deployJobColor, message: "App deployment to `production` Kubernetes: ${deployJob.currentResult} (Approved by ${prodGateApprover})\n${deployJobLink}")
-      }
-    }
-
     stage('TagRelease')  {
       agent { label 'release-helper' }
       steps {
         container('release-helper') {
-          slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nRecording production deployment event...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
+          wrap([$class: 'BuildUser']) {
+            script {
+              env.DEPLOYER = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR : BUILD_USER
+              env.DEPLOYER_EMAIL = BUILD_USER.contains('SCM') ? COMMIT_AUTHOR_EMAIL : BUILD_USER_EMAIL
+              env.SLACK_USER = DEPLOYER_EMAIL.contains('@loyalty.co.nz') ? "<@${slackUserIdFromEmail(DEPLOYER_EMAIL)}>" : env.DEPLOYER
+              env.BUILD_DETAILS = "```"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nDeployer: ${env.DEPLOYER}"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nRelease:  ${env.RELEASE_VERSION}"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\nCommit:   ${env.COMMIT_LINK} (${env.COMMIT_AUTHOR})"
+              env.BUILD_DETAILS = "${env.BUILD_DETAILS}\n```"
+            }
+          }
+          slackSend(channel: slackResponse.channelId, message: "${env.BUILD_TITLE}\nNew gem release ${repositoryName} version ${RELEASE_VERSION}...\n${env.BUILD_DETAILS}", color: "#0099ff", timestamp: slackResponse.ts)
           sh """
-            /dist/release_helper --type full_release \
+            /dist/release_helper --type library_release \
               --environmentName production \
               --appName ${appName} \
               --repositoryName ${repositoryName} \
