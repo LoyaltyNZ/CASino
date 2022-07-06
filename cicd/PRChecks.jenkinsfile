@@ -9,7 +9,7 @@ pipeline {
       kind: Pod
       metadata:
         labels:
-          some-label: dind-agent
+          jenkins-agent: casino-prcheck
       spec:
         containers:
         - name: ruby

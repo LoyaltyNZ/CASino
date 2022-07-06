@@ -1,9 +1,0 @@
-ingress:
-  env: red
-  hosts:
-  - host: api.red.loyaltyintegration.co.nz
-    paths: # TODO update API_PATH
-    - path: /1/<API_PATH>*
-  - host: api.loyaltyred.co.nz
-    paths: # TODO update API_PATH
-    - path: /1/<API_PATH>*

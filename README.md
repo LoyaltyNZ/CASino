@@ -10,14 +10,9 @@ Please check our [documentation](http://casino.rbcas.com/) for setup and configu
 
 ## Test Suite
 
-Run the RSpec test suite by installing the `appraisal` gem and dependencies:
+To run the test suite:
 
-    $ gem install appraisal
-    $ appraisal install
-
-And then running tests using `appraisal`:
-
-    $ appraisal rake
+`bundle exec rspec spec`
 
 ## License
 
@@ -26,16 +21,16 @@ CASino is released under the [MIT License](http://www.opensource.org/licenses/MI
 
 ## Deployment
 This application uses a CICD process, the project Jenkins folder can be found in the following link:
-https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/
+https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/
 
 
 ### Jenkins Job List
 |Job|URL|Status|
 | :---| :--- | :--- |
-| **ReleasePipeline** | [Kubernetes/casino/ReleasePipeline](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/ReleasePipeline/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FReleasePipeline)](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/ReleasePipeline/) |
-| **DeployApp** | [Kubernetes/casino/DeployApp](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/DeployApp/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FDeployApp)](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/DeployApp/) |
-| **PRCheck** | [Kubernetes/casino/PRCheck](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/PRCheck/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FPRCheck)](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/PRCheck/) |
-| **BranchBuildDeploy** | [Kubernetes/casino/BranchBuildDeploy](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/BranchBuildDeploy/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FBranchBuildDeploy)](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/BranchBuildDeploy/) |
+| **ReleasePipeline** | [Kubernetes/casino/ReleasePipeline](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/ReleasePipeline/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FReleasePipeline)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/ReleasePipeline/) |
+| **DeployApp** | [SharedTools/casino/DeployApp](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/DeployApp/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FDeployApp)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/DeployApp/) |
+| **PRCheck** | [SharedTools/casino/PRCheck](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/PRCheck/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FPRCheck)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/PRCheck/) |
+| **BranchBuildDeploy** | [SharedTools/casino/BranchBuildDeploy](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/BranchBuildDeploy/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FBranchBuildDeploy)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/BranchBuildDeploy/) |
 
 
 
@@ -44,10 +39,10 @@ https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/
 2. Make your code changes then **push your branch** to Github.
    - Use the Jira id in your commit message
 3. **Open a Pull Request** to master/main branch, prefixing the title the Jira ticket (e.g. `[DEVOPS-333] My pull request`).
-4. Wait for the PR automated checks to finish in [Jenkins](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/PRCheck/).
+4. Wait for the PR automated checks to finish in [Jenkins](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/PRCheck/).
 5. **Ask for review** in Github.
 6. **Merge your code** to master/main once approved and PRCheck passed.
-7. **Follow** the ReleasePipeline [Jenkins Build and Push job](https://jenkins.loyaltydevops.co.nz/job/Kubernetes/job/casino/job/ReleasePipeline/).
+7. **Follow** the ReleasePipeline [Jenkins Build and Push job](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/ReleasePipeline/).
 8. **Monitor** your Release and Application for unexpected behavior.
 
 #### Getting help

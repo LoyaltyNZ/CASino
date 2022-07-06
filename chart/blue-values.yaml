@@ -1,9 +1,0 @@
-ingress:
-  env: blue
-  hosts:
-  - host: api.blue.loyaltytest.co.nz
-    paths: # TODO update API_PATH
-    - path: /1/<API_PATH>*
-  - host: api.loyaltyblue.co.nz
-    paths: # TODO update API_PATH
-    - path: /1/<API_PATH>*
