@@ -6,7 +6,8 @@ It currently supports [CAS 1.0 and CAS 2.0](http://apereo.github.io/cas) as well
 
 ## Setup
 
-Please check our [documentation](http://casino.rbcas.com/) for setup and configuration instructions.
+Please check our [documentation](https://web.archive.org/web/20191121071722/http://casino.rbcas.com/) for setup and configuration instructions.
+API docs are available [here](https://www.rubydoc.info/gems/casino/4.1.2/CASino).
 
 ## Test Suite
 
@@ -28,10 +29,7 @@ https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/
 |Job|URL|Status|
 | :---| :--- | :--- |
 | **ReleasePipeline** | [Kubernetes/casino/ReleasePipeline](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/ReleasePipeline/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FReleasePipeline)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/ReleasePipeline/) |
-| **DeployApp** | [SharedTools/casino/DeployApp](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/DeployApp/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FDeployApp)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/DeployApp/) |
 | **PRCheck** | [SharedTools/casino/PRCheck](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/PRCheck/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FPRCheck)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/PRCheck/) |
-| **BranchBuildDeploy** | [SharedTools/casino/BranchBuildDeploy](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/BranchBuildDeploy/) | [![Build Status](https://jenkins.loyaltydevops.co.nz/buildStatus/icon?job=Kubernetes%2Fcasino%2FBranchBuildDeploy)](https://jenkins.loyaltydevops.co.nz/job/SharedTools/job/casino/job/BranchBuildDeploy/) |
-
 
 
 ### CICD Usage

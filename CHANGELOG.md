@@ -1,3 +1,8 @@
+# 7/7/2022 - v5.2.1
+
+* Fixed README.md documentation for Jenkins tasks, and links to external website, which is only available via the Internet Archive project [DS-1946](https://loyaltynz.atlassian.net/browse/DS-1946)
+
+
 # 5/7/2022 - v5.2.0
 
 * Upgrade to Rails 7, Ruby 3 [DS-1946](https://loyaltynz.atlassian.net/browse/DS-1946)
