@@ -11,6 +11,7 @@ pipeline {
   agent { label 'release-helper' }
 
   environment {
+    JENKINS_API_CREDENTIALS = credentials('jenkins-api-read-only')
     GITHUB_API_TOKEN = credentials('github-svc-cicd')
     JIRA_API_TOKEN = credentials('jira-svc-cicd')
     DATADOG_API_TOKEN = credentials('datadog-api-token')
