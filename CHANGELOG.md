@@ -1,3 +1,7 @@
+# 16/08/2022 - v5.2.2
+
+- Add credentials for release-helper - [DS-2312](https://loyaltynz.atlassian.net/browse/DS-2312)
+
 # 7/7/2022 - v5.2.1
 
 * Fixed README.md documentation for Jenkins tasks, and links to external website, which is only available via the Internet Archive project [DS-1946](https://loyaltynz.atlassian.net/browse/DS-1946)
