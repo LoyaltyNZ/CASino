@@ -1,3 +1,32 @@
+# 16/08/2022 - v5.2.3
+
+Automated Monthly Patching Feb23
+- Gems updated:
+  - rack 2.2.6.2 (was 2.2.4)
+  - racc 1.6.2 (was 1.6.0) with native extensions
+  - timeout 0.3.2 (was 0.3.0)
+  - digest 3.1.1 (was 3.1.0) with native extensions
+  - strscan 3.0.6 (was 3.0.4) with native extensions
+  - zeitwerk 2.6.7 (was 2.6.6)
+  - tzinfo 2.0.6 (was 2.0.5)
+  - activesupport 7.0.4.2 (was 7.0.4)
+  - nokogiri 1.13.10 (x86_64-linux) (was 1.13.9)
+  - globalid 1.0.1 (was 1.0.0)
+  - activemodel 7.0.4.2 (was 7.0.4)
+  - activejob 7.0.4.2 (was 7.0.4)
+  - activerecord 7.0.4.2 (was 7.0.4)
+  - loofah 2.19.1 (was 2.18.0)
+  - rails-html-sanitizer 1.4.4 (was 1.4.3)
+  - actionview 7.0.4.2 (was 7.0.4)
+  - actionpack 7.0.4.2 (was 7.0.4)
+  - activestorage 7.0.4.2 (was 7.0.4)
+  - actioncable 7.0.4.2 (was 7.0.4)
+  - railties 7.0.4.2 (was 7.0.4)
+  - actiontext 7.0.4.2 (was 7.0.4)
+  - actionmailbox 7.0.4.2 (was 7.0.4)
+  - actionmailer 7.0.4.2 (was 7.0.4)
+  - rails 7.0.4.2 (was 7.0.4)
+
 # 16/08/2022 - v5.2.2
 
 - Add credentials for release-helper - [DS-2312](https://loyaltynz.atlassian.net/browse/DS-2312)
@@ -55,3 +84,4 @@
 # 9/26/2015
 
 * Added ability to pass a `context` object when verifying user login, allowing to pass extra data such as HTTP request (e.g. subdomain) if needed [5a99dac8f83492d643c20719f2d911d27c933a68](https://github.com/identification-io/CASino/commit/5a99dac8f83492d643c20719f2d911d27c933a68)
+
