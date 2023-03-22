@@ -1,3 +1,22 @@
+# 16/08/2022 - v5.2.4
+
+Automated Monthly Patching Mar23
+- Gems updated:
+  - rack 2.2.6.4 (was 2.2.6.2)
+  - activesupport 7.0.4.3 (was 7.0.4.2)
+  - activemodel 7.0.4.3 (was 7.0.4.2)
+  - activejob 7.0.4.3 (was 7.0.4.2)
+  - activerecord 7.0.4.3 (was 7.0.4.2)
+  - actionview 7.0.4.3 (was 7.0.4.2)
+  - actionpack 7.0.4.3 (was 7.0.4.2)
+  - actioncable 7.0.4.3 (was 7.0.4.2)
+  - railties 7.0.4.3 (was 7.0.4.2)
+  - activestorage 7.0.4.3 (was 7.0.4.2)
+  - actiontext 7.0.4.3 (was 7.0.4.2)
+  - actionmailbox 7.0.4.3 (was 7.0.4.2)
+  - actionmailer 7.0.4.3 (was 7.0.4.2)
+  - rails 7.0.4.3 (was 7.0.4.2)
+
 # 16/08/2022 - v5.2.3
 
 Automated Monthly Patching Feb23
@@ -84,4 +103,5 @@ Automated Monthly Patching Feb23
 # 9/26/2015
 
 * Added ability to pass a `context` object when verifying user login, allowing to pass extra data such as HTTP request (e.g. subdomain) if needed [5a99dac8f83492d643c20719f2d911d27c933a68](https://github.com/identification-io/CASino/commit/5a99dac8f83492d643c20719f2d911d27c933a68)
+
 
