@@ -1,3 +1,9 @@
+# 16/08/2022 - v5.2.5
+
+Automated Monthly Patching Apr23
+- Gems updated:
+  - addressable 2.8.2 (was 2.8.1)
+
 # 16/08/2022 - v5.2.4
 
 Automated Monthly Patching Mar23
@@ -103,5 +109,6 @@ Automated Monthly Patching Feb23
 # 9/26/2015
 
 * Added ability to pass a `context` object when verifying user login, allowing to pass extra data such as HTTP request (e.g. subdomain) if needed [5a99dac8f83492d643c20719f2d911d27c933a68](https://github.com/identification-io/CASino/commit/5a99dac8f83492d643c20719f2d911d27c933a68)
+
 
 
