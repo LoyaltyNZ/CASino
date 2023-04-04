@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    casino (5.2.4)
+    casino (5.2.5)
       addressable (>= 2.3)
       faraday (>= 1.1.0)
       grape (>= 0.8)
@@ -82,7 +82,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    addressable (2.8.2)
+    addressable (2.8.3)
       public_suffix (>= 2.0.2, < 6.0)
     appraisal (2.4.1)
       bundler
@@ -187,7 +187,7 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.13.10-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.13.10-x86_64-linux)
