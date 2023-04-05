@@ -1,3 +1,10 @@
+# 16/08/2022 - v5.2.6
+
+Automated Monthly Patching Apr23
+- Gems updated:
+  - nio4r 2.5.9 (was 2.5.8) with native extensions
+  - addressable 2.8.3 (was 2.8.2)
+
 # 16/08/2022 - v5.2.5
 
 Automated Monthly Patching Apr23
@@ -109,6 +116,7 @@ Automated Monthly Patching Feb23
 # 9/26/2015
 
 * Added ability to pass a `context` object when verifying user login, allowing to pass extra data such as HTTP request (e.g. subdomain) if needed [5a99dac8f83492d643c20719f2d911d27c933a68](https://github.com/identification-io/CASino/commit/5a99dac8f83492d643c20719f2d911d27c933a68)
+
 
 
 
