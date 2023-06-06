@@ -1,3 +1,25 @@
+# 16/08/2022 - v5.2.8
+
+Automated Monthly Patching Jun23
+- Gems updated:
+  - thor 1.2.2 (was 1.2.1)
+  - faraday 2.7.5 (was 2.7.4)
+  - activesupport 7.0.5 (was 7.0.4.3)
+  - nokogiri 1.14.5 (x86_64-linux) (was 1.14.3)
+  - activemodel 7.0.5 (was 7.0.4.3)
+  - activejob 7.0.5 (was 7.0.4.3)
+  - grape 1.7.1 (was 1.7.0)
+  - activerecord 7.0.5 (was 7.0.4.3)
+  - actionview 7.0.5 (was 7.0.4.3)
+  - actionpack 7.0.5 (was 7.0.4.3)
+  - actioncable 7.0.5 (was 7.0.4.3)
+  - activestorage 7.0.5 (was 7.0.4.3)
+  - railties 7.0.5 (was 7.0.4.3)
+  - actiontext 7.0.5 (was 7.0.4.3)
+  - actionmailbox 7.0.5 (was 7.0.4.3)
+  - actionmailer 7.0.5 (was 7.0.4.3)
+  - rails 7.0.5 (was 7.0.4.3)
+
 # 16/08/2022 - v5.2.7
 
 Automated Monthly Patching May23
@@ -124,6 +146,7 @@ Automated Monthly Patching Feb23
 # 9/26/2015
 
 * Added ability to pass a `context` object when verifying user login, allowing to pass extra data such as HTTP request (e.g. subdomain) if needed [5a99dac8f83492d643c20719f2d911d27c933a68](https://github.com/identification-io/CASino/commit/5a99dac8f83492d643c20719f2d911d27c933a68)
+
 
 
 
