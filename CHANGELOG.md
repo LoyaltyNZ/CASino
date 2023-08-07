@@ -1,3 +1,16 @@
+# 16/08/2022 - v5.2.10
+
+Automated Monthly Patching Aug23
+- Gems updated:
+  - rack 2.2.8 (was 2.2.7)
+  - zeitwerk 2.6.11 (was 2.6.8)
+  - rexml 3.2.6 (was 3.2.5)
+  - websocket-driver 0.7.6 (was 0.7.5) with native extensions
+  - addressable 2.8.5 (was 2.8.4)
+  - faraday 2.7.10 (was 2.7.9)
+  - dry-core 1.0.1 (was 1.0.0)
+  - net-imap 0.3.7 (was 0.3.6)
+
 # 16/08/2022 - v5.2.9
 
 Automated Monthly Patching Jul23
