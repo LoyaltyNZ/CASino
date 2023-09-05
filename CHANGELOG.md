@@ -1,3 +1,22 @@
+# 16/08/2022 - v5.2.11
+
+Automated Monthly Patching Sep23
+- Gems updated:
+  - mini_mime 1.1.5 (was 1.1.2)
+  - activesupport 7.0.7.2 (was 7.0.6)
+  - activemodel 7.0.7.2 (was 7.0.6)
+  - activejob 7.0.7.2 (was 7.0.6)
+  - activerecord 7.0.7.2 (was 7.0.6)
+  - actionview 7.0.7.2 (was 7.0.6)
+  - actionpack 7.0.7.2 (was 7.0.6)
+  - activestorage 7.0.7.2 (was 7.0.6)
+  - actioncable 7.0.7.2 (was 7.0.6)
+  - railties 7.0.7.2 (was 7.0.6)
+  - actiontext 7.0.7.2 (was 7.0.6)
+  - actionmailer 7.0.7.2 (was 7.0.6)
+  - actionmailbox 7.0.7.2 (was 7.0.6)
+  - rails 7.0.7.2 (was 7.0.6)
+
 # 16/08/2022 - v5.2.10
 
 Automated Monthly Patching Aug23
