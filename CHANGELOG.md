@@ -1,3 +1,24 @@
+# 16/08/2022 - v5.2.12
+
+Automated Monthly Patching Oct23
+- Gems updated:
+  - zeitwerk 2.6.12 (was 2.6.11)
+  - faraday 2.7.11 (was 2.7.10)
+  - sprockets 4.2.1 (was 4.2.0)
+  - activesupport 7.0.8 (was 7.0.7.2)
+  - activemodel 7.0.8 (was 7.0.7.2)
+  - activejob 7.0.8 (was 7.0.7.2)
+  - activerecord 7.0.8 (was 7.0.7.2)
+  - actionview 7.0.8 (was 7.0.7.2)
+  - actionpack 7.0.8 (was 7.0.7.2)
+  - activestorage 7.0.8 (was 7.0.7.2)
+  - railties 7.0.8 (was 7.0.7.2)
+  - actiontext 7.0.8 (was 7.0.7.2)
+  - actioncable 7.0.8 (was 7.0.7.2)
+  - actionmailer 7.0.8 (was 7.0.7.2)
+  - actionmailbox 7.0.8 (was 7.0.7.2)
+  - rails 7.0.8 (was 7.0.7.2)
+
 # 16/08/2022 - v5.2.11
 
 Automated Monthly Patching Sep23
