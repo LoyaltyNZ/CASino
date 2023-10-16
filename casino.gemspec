@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.summary     = 'A simple CAS server written in Ruby using the Rails framework.'
   s.description = 'CASino is a simple CAS (Central Authentication Service) server.'
+
   s.required_ruby_version = "~> #{File.read('.ruby-version').strip}"
 
   s.files         = `git ls-files`.split("\n")
