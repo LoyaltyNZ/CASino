@@ -1,3 +1,24 @@
+# 17/10/2023 - v5.2.14
+
+- Update to ruby 3.2.2 (was 3.1.2) [DS-3755](https://loyaltynz.atlassian.net/browse/DS-3755)
+- Improve PRChecks
+- Gems updated:
+  - activerecord 7.1 (was 7.0)
+  - rspec-rails 6.0 (was 4.0)
+  - rqrcode 0.7 (was 0.10)
+  - appraisal 2.5 (was 2.1)
+  - capybara 3.39 (was 2.1)
+  - factory_bot 6.3 (was 4.1)
+  - rspec-its 1.3 (was 1.0)
+  - webmock 3.19 (was 3.9)
+  - sqlite3 1.6 (was 1.3)
+  - addressable 2.8 (was 2.3)
+  - faraday 2.7 (was 1.1)
+  - grape 1.8 (was 0.8)
+  - rails 7.1 (was 7.0)
+  - terminal-table 3.0 (was 1.4)
+  - useragent 0.16 (was 0.4)
+  
 # 17/10/2023 - v5.2.13
 
 - Update release pipeline to send to Nexus [DS-3755](https://loyaltynz.atlassian.net/browse/DS-3755)
