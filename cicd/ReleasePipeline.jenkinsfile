@@ -22,6 +22,10 @@ pipeline {
     COMMIT_AUTHOR_EMAIL = sh(script: "git log --format='%ae' ${env.GIT_COMMIT}^!", returnStdout: true).trim()
     COMMIT_LINK = "<${env.GIT_URL.replace('.git', '')}/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.substring(0, 7)}>"
     BUILD_TITLE = "*<${env.GIT_URL}|${repositoryName}> :git: | ${buildLink}*"
+    RUBY_VERSION = sh(script: 'cat .ruby-version', returnStdout: true).trim()
+    // Nexus ruby version is the version of ruby that is used to push the gem to nexus.
+    // The nexus ruby version is different to the ruby version because the nexus gem won't run on ruby 3.2.x
+    NEXUS_RUBY_VERSION="3.1.2"
   }
 
   // Configuration that applies to the whole job
@@ -31,6 +35,52 @@ pipeline {
   }
 
   stages {
+    stage('BuildPushGem') {
+      agent {
+          kubernetes {
+              yaml """\
+      apiVersion: v1
+      kind: Pod
+      spec:
+        containers:
+        - name: ruby
+          image: docker.loyaltydevops.co.nz/service_base_ruby:${env.RUBY_VERSION}
+          tty: true
+        - name: nexus-ruby
+          image: docker.loyaltydevops.co.nz/service_base_ruby:${env.NEXUS_RUBY_VERSION}
+          tty: true
+      """
+          }
+      }
+      steps {
+        container('ruby') {
+          withCredentials([usernamePassword(credentialsId: 'nexus-svc-docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh '''
+              rm *.gem || true
+              pwd
+              gem build *.gemspec
+              # Must chown the gem file to the jenkins user, otherwise the unstash command will fail
+              chown 1000:1000 *.gem
+            '''
+            script {
+              stash includes: '*.gem', name: 'build'
+            }
+          }
+        }
+        container('nexus-ruby') {
+          withCredentials([usernamePassword(credentialsId: 'nexus-svc-docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            script {
+              unstash 'build'
+            }
+            sh '''
+              gem install nexus
+              gem nexus *.gem --credential $USERNAME:$PASSWORD --url https://nexus.loyaltydevops.co.nz/repository/loyaltynz-ruby
+            '''
+          }
+        }
+      }
+    }
+
     stage('TagRelease')  {
       steps {
         container('release-helper') {

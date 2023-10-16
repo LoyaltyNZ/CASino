@@ -1,3 +1,7 @@
+# 17/10/2023 - v5.2.13
+
+- Update release pipeline to send to Nexus [DS-3755](https://loyaltynz.atlassian.net/browse/DS-3755)
+
 # 16/08/2022 - v5.2.12
 
 Automated Monthly Patching Oct23
