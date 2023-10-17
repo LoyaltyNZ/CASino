@@ -1,31 +1,34 @@
-static final RUBY_VERSION = "3.1.2"
-
 
 pipeline {
-  agent {
-    kubernetes {
-      yaml """\
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        labels:
-          jenkins-agent: casino-prcheck
-      spec:
-        containers:
-        - name: ruby
-          image: docker.loyaltydevops.co.nz/service_base_ruby:${RUBY_VERSION}
-          tty: true
-      """
-    }
-  }
+  agent { label 'dind' }
 
   options {
     ansiColor('xterm')
     timeout(time: 3, unit: 'HOURS')
   }
 
-stages {
+  environment {
+    RUBY_VERSION = sh(script: "cat .ruby-version", returnStdout: true).trim()
+  }
+
+  stages {
     stage ('UnitTest') {
+      agent {
+          kubernetes {
+          yaml """\
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            labels:
+              jenkins-agent: casino-prcheck
+          spec:
+            containers:
+            - name: ruby
+              image: docker.loyaltydevops.co.nz/service_base_ruby:${env.RUBY_VERSION}
+              tty: true
+          """
+        }
+      }
       steps {
         container('ruby') {
           sh '''
@@ -37,6 +40,7 @@ stages {
 
             # Install ruby gems
             bundle install
+            bundle exec rake check_version
 
             # Bundle audit
             bundle exec bundle-audit update && bundle exec bundle-audit check

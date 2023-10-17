@@ -11,11 +11,11 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.summary     = 'A simple CAS server written in Ruby using the Rails framework.'
   s.description = 'CASino is a simple CAS (Central Authentication Service) server.'
-  s.required_ruby_version = '>= 3.1.0'
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  s.required_ruby_version = "~> #{File.read('.ruby-version').strip}"
+  
+  s.files         = Dir.glob( '{app,config,db,lib,public}/**/*.rb' ) + Dir.glob( '*.pem' )
+  s.test_files    = Dir.glob( 'spec/**/*.*' )
   s.require_paths = ['lib']
 
   sign_file = File.expand_path '~/.gem/casino-private_key.pem'
@@ -24,15 +24,15 @@ Gem::Specification.new do |s|
     s.cert_chain  = ['casino-public_cert.pem']
   end
 
-  s.add_runtime_dependency 'addressable', '>= 2.3'
-  s.add_runtime_dependency 'faraday', '>= 1.1.0'
-  s.add_runtime_dependency 'grape', '>= 0.8'
-  s.add_runtime_dependency 'grape-entity', '>= 0.4'
-  s.add_runtime_dependency 'kaminari', '~> 1.2.1'
-  s.add_runtime_dependency 'rails', '>= 7.0.3'
-  s.add_runtime_dependency 'rotp', '~> 3.3.0'
-  s.add_runtime_dependency 'rqrcode_png', '>= 0.1'
-  s.add_runtime_dependency 'sass-rails', '>= 4.0.0'
-  s.add_runtime_dependency 'terminal-table', '>= 1.4'
-  s.add_runtime_dependency 'useragent', '>= 0.4'
+  s.add_runtime_dependency 'addressable',    '~> 2.8'
+  s.add_runtime_dependency 'faraday',        '~> 2.7'
+  s.add_runtime_dependency 'grape',          '~> 1.8'
+  s.add_runtime_dependency 'grape-entity',   '~> 1.0'
+  s.add_runtime_dependency 'kaminari',       '~> 1.2'
+  s.add_runtime_dependency 'rails',          '~> 7.1'
+  s.add_runtime_dependency 'rotp',           '~> 3.3'
+  s.add_runtime_dependency 'rqrcode_png',    '~> 0.1'
+  s.add_runtime_dependency 'sass-rails',     '~> 6.0'
+  s.add_runtime_dependency 'terminal-table', '~> 3.0'
+  s.add_runtime_dependency 'useragent',      '~> 0.16'
 end
