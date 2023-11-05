@@ -1,3 +1,11 @@
+# 17/10/2023 - v5.2.15
+
+Automated Monthly Patching Nov23
+- Gems updated:
+  - racc 1.7.3 (was 1.7.1) with native extensions
+  - sqlite3 1.6.8 (x86_64-linux) (was 1.6.7)
+  - net-imap 0.4.4 (was 0.4.1)
+
 # 17/10/2023 - v5.2.14
 
 - Update to ruby 3.2.2 (was 3.1.2) [DS-3755](https://loyaltynz.atlassian.net/browse/DS-3755)
