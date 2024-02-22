@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = 'CASino is a simple CAS (Central Authentication Service) server.'
 
   s.required_ruby_version = "~> #{File.read('.ruby-version').strip}"
-  
+
   s.files         = Dir.glob( '{app,config,db,lib,public}/**/*.rb' ) + Dir.glob( '*.pem' )
   s.test_files    = Dir.glob( 'spec/**/*.*' )
   s.require_paths = ['lib']
@@ -35,4 +35,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sass-rails',     '~> 6.0'
   s.add_runtime_dependency 'terminal-table', '~> 3.0'
   s.add_runtime_dependency 'useragent',      '~> 0.16'
+  s.add_runtime_dependency 'base64'
+  s.add_runtime_dependency 'observer'
 end
