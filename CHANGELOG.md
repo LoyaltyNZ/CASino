@@ -1,3 +1,9 @@
+# Changelog
+
+# 23/02/2024 - v5.2.16
+
+- Updated ruby to 3.3.0 (was 3.2.2) [DS-4133](https://loyaltynz.atlassian.net/browse/DS-4133)
+
 # 17/10/2023 - v5.2.15
 
 Automated Monthly Patching Nov23
