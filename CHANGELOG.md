@@ -1,5 +1,44 @@
 # Changelog
 
+# 23/02/2024 - v5.2.17
+
+Automated Monthly Patching Mar24
+- Gems updated:
+  - bigdecimal 3.1.6 (was 3.1.4) with native extensions
+  - zeitwerk 2.6.13 (was 2.6.12)
+  - concurrent-ruby 1.2.3 (was 1.2.2)
+  - marcel 1.0.4 (was 1.0.2)
+  - rack 3.0.9.1 (was 3.0.8)
+  - public_suffix 5.0.4 (was 5.0.3)
+  - regexp_parser 2.8.3 (was 2.8.2)
+  - stringio 3.0.9 (was 3.0.8) with native extensions
+  - diff-lcs 1.5.1 (was 1.5.0)
+  - rspec-support 3.12.2 (was 3.12.1)
+  - addressable 2.8.6 (was 2.8.5)
+  - faraday 2.7.12 (was 2.7.11)
+  - rspec-core 3.12.3 (was 3.12.2)
+  - rspec-expectations 3.12.4 (was 3.12.3)
+  - sqlite3 1.6.9 (was 1.6.8) with native extensions
+  - rspec-mocks 3.12.7 (was 3.12.6)
+  - net-imap 0.4.10 (was 0.4.4)
+  - net-smtp 0.4.0.1 (was 0.4.0)
+  - crack 0.4.6 (was 0.4.5)
+  - dry-types 1.7.2 (was 1.7.1)
+  - activesupport 7.1.3.2 (was 7.1.1)
+  - activemodel 7.1.3.2 (was 7.1.1)
+  - activejob 7.1.3.2 (was 7.1.1)
+  - actionview 7.1.3.2 (was 7.1.1)
+  - activerecord 7.1.3.2 (was 7.1.1)
+  - actionpack 7.1.3.2 (was 7.1.1)
+  - actionmailer 7.1.3.2 (was 7.1.1)
+  - actioncable 7.1.3.2 (was 7.1.1)
+  - railties 7.1.3.2 (was 7.1.1)
+  - activestorage 7.1.3.2 (was 7.1.1)
+  - actionmailbox 7.1.3.2 (was 7.1.1)
+  - actiontext 7.1.3.2 (was 7.1.1)
+  - rspec-rails 6.0.4 (was 6.0.3)
+  - rails 7.1.3.2 (was 7.1.1)
+
 # 23/02/2024 - v5.2.16
 
 - Updated ruby to 3.3.0 (was 3.2.2) [DS-4133](https://loyaltynz.atlassian.net/browse/DS-4133)
