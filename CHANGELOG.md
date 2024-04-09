@@ -3,6 +3,7 @@
 # v5.2.18
 
 - Support ruby versions 3.1.2, 3.2.2 and 3.3.0 [DS-4133](https://loyaltynz.atlassian.net/browse/DS-4133)
+- Updated RDoc to fix security vulnerability
 
 # 23/02/2024 - v5.2.17
 
