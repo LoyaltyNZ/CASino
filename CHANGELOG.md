@@ -1,5 +1,10 @@
 # Changelog
 
+# v5.2.18
+
+- Support ruby versions 3.1.2, 3.2.2 and 3.3.0 [DS-4133](https://loyaltynz.atlassian.net/browse/DS-4133)
+- Updated RDoc to fix security vulnerability
+
 # 23/02/2024 - v5.2.17
 
 Automated Monthly Patching Mar24
@@ -71,7 +76,7 @@ Automated Monthly Patching Nov23
   - rails 7.1 (was 7.0)
   - terminal-table 3.0 (was 1.4)
   - useragent 0.16 (was 0.4)
-  
+
 # 17/10/2023 - v5.2.13
 
 - Update release pipeline to send to Nexus [DS-3755](https://loyaltynz.atlassian.net/browse/DS-3755)

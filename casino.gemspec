@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = 'A simple CAS server written in Ruby using the Rails framework.'
   s.description = 'CASino is a simple CAS (Central Authentication Service) server.'
 
-  s.required_ruby_version = "~> #{File.read('.ruby-version').strip}"
+  s.required_ruby_version = '>= 3.1'
 
   s.files         = Dir.glob( '{app,config,db,lib,public}/**/*.rb' ) + Dir.glob( '*.pem' )
   s.test_files    = Dir.glob( 'spec/**/*.*' )
