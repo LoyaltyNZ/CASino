@@ -1,5 +1,17 @@
 # Changelog
 
+# v5.2.19
+
+Automated Monthly Patching May24
+- Gems updated:
+  - bigdecimal 3.1.7 (was 3.1.6) with native extensions
+  - rack 3.0.10 (was 3.0.9.1)
+  - public_suffix 5.0.5 (was 5.0.4)
+  - mini_portile2 2.8.6 (was 2.8.5)
+  - nokogiri 1.16.4 (x86_64-linux) (was 1.16.2)
+  - i18n 1.14.4 (was 1.14.1)
+  - grape-entity 1.0.1 (was 1.0.0)
+
 # v5.2.18
 
 - Support ruby versions 3.1.2, 3.2.2 and 3.3.0 [DS-4133](https://loyaltynz.atlassian.net/browse/DS-4133)
