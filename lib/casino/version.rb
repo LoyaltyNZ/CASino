@@ -1,3 +1,3 @@
 module CASino
-  VERSION = '5.2.19'.freeze
+  VERSION = '5.2.20'.freeze
 end
