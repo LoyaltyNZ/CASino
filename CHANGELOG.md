@@ -1,5 +1,10 @@
 # Changelog
 
+# v5.2.20
+
+Automated Monthly Patching Jun24
+- Gems updated:
+
 # v5.2.19
 
 Automated Monthly Patching May24
