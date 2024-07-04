@@ -1,5 +1,13 @@
 # Changelog
 
+# v5.3.0
+
+- Bump `rack` version to 3.1 [DS-4497](https://loyaltynz.atlassian.net/browse/DS-4497)
+- Other gems updated:
+  - Bump `rails` 7.1.3.4 (was 7.1.3.2)
+  - Bump `grape` 2.1.2 (was 1.8.0)
+  - Bump `rexml` 3.3.1 (was 3.2.6)
+  
 # v5.2.19
 
 Automated Monthly Patching May24
